@@ -10,10 +10,13 @@ Esta aplicação fornece uma interface gráfica amigável para realizar operaç�
 
 - ➕ **Operações básicas**: Adição, subtração, multiplicação e divisão
 - 🔢 **Suporte a decimais**: Trabalha com números inteiros e decimais
+- 🔢 **Números negativos**: Suporte completo a números negativos
+- 📐 **Parênteses**: Suporte a expressões com parênteses para ordem de operações
 - 🧹 **Botão limpar**: Remove toda a expressão com um clique
 - 📱 **Interface responsiva**: Layout que se adapta ao redimensionamento
-- ⚡ **Avaliação em tempo real**: Calcula expressões matemáticas instantaneamente
+- ⚡ **Avaliação segura**: Calcula expressões matemáticas sem vulnerabilidades de segurança
 - 🎨 **Design intuitivo**: Interface familiar semelhante a calculadoras físicas
+- 🛡️ **Segurança**: Implementação segura sem uso de `eval()`, protegida contra execução de código malicioso
 
 ## 🚀 Como usar
 
@@ -59,12 +62,24 @@ Esta aplicação fornece uma interface gráfica amigável para realizar operaç�
 
 ```python
 class Calculadora(tk.Tk):
-    def __init__(self):           # Inicialização da janela
-    def _criar_widgets(self):     # Criação da interface
-    def adicionar(self, valor):   # Adiciona caracteres ao display
-    def limpar(self):            # Limpa o display
-    def calcular(self):          # Executa o cálculo
+    def __init__(self):                      # Inicialização da janela
+    def _criar_widgets(self):                # Criação da interface
+    def adicionar(self, valor):              # Adiciona caracteres ao display
+    def limpar(self):                        # Limpa o display
+    def calcular(self):                      # Executa o cálculo seguro
+    def _avaliar_expressao_segura(self):     # Parser seguro de expressões
+    def _calcular_tokens(self):              # Algoritmo Shunting Yard
 ```
+
+### Arquitetura de Segurança
+
+O código implementa múltiplas camadas de segurança:
+
+1. **Validação de Entrada**: Regex para aceitar apenas caracteres matemáticos
+2. **Tokenização**: Divisão da expressão em tokens válidos
+3. **Análise Sintática**: Verificação de parênteses balanceados e operadores válidos
+4. **Conversão Segura**: Algoritmo Shunting Yard para infix→postfix
+5. **Avaliação Controlada**: Cálculo usando stack sem `eval()`
 
 ### Componentes
 
@@ -75,32 +90,70 @@ class Calculadora(tk.Tk):
 - **Botão igual**: = para executar o cálculo
 - **Botão limpar**: C para resetar a calculadora
 
-## ⚠️ Considerações de Segurança
+### Algoritmo de Segurança
 
-**IMPORTANTE**: A versão atual utiliza a função `eval()` para avaliar expressões matemáticas, o que pode representar um risco de segurança em ambientes de produção. 
+A calculadora utiliza um **parser matemático seguro** que:
 
-### Recomendações:
+- ✅ **Valida entrada**: Aceita apenas caracteres matemáticos válidos (números, operadores, parênteses)
+- ✅ **Shunting Yard**: Implementa o algoritmo Shunting Yard para conversão infix→postfix
+- ✅ **Avaliação controlada**: Calcula expressões sem executar código arbitrário
+- ✅ **Tratamento de erros**: Gerencia divisão por zero e expressões inválidas
+- ✅ **Suporte a precedência**: Respeita a ordem matemática de operações
+- ✅ **Parênteses balanceados**: Verifica e processa parênteses corretamente
 
-- Use apenas para fins educacionais ou desenvolvimento local
-- Para uso em produção, substitua `eval()` por um parser seguro
-- Considere usar bibliotecas como `simpleeval` ou implementar um parser personalizado
+## ✅ Segurança e Confiabilidade
+
+### 🛡️ Correções de Segurança Implementadas
+
+**RESOLVIDO**: A versão atual **NÃO** utiliza mais a função `eval()` que representava um risco crítico de segurança.
+
+### ✅ Implementação Segura:
+
+- **Parser Matemático Próprio**: Implementação customizada para avaliar expressões
+- **Validação Rigorosa**: Aceita apenas caracteres matemáticos válidos
+- **Proteção contra Injeção**: Impossibilita execução de código malicioso
+- **Algoritmo Shunting Yard**: Conversão segura de notação infix para postfix
+- **Controle de Precedência**: Respeita ordem matemática de operações
+
+### 🧪 Casos de Teste de Segurança:
+
+```python
+# ✅ Expressões válidas que funcionam:
+"2+3*4"           # = 14
+"(2+3)*4"         # = 20  
+"10/2-1"          # = 4
+"-5+3"            # = -2
+
+# ❌ Tentativas maliciosas que são bloqueadas:
+"__import__('os').system('dir')"    # Erro: caracteres inválidos
+"exec('print(1)')"                  # Erro: caracteres inválidos
+"eval('2+2')"                       # Erro: caracteres inválidos
+```
 
 ## 🛠️ Melhorias Futuras
 
-- [ ] Substituir `eval()` por parser seguro
+- [x] ✅ **Substituir `eval()` por parser seguro** - CONCLUÍDO
+- [x] ✅ **Implementar suporte a parênteses** - CONCLUÍDO  
+- [x] ✅ **Adicionar suporte a números negativos** - CONCLUÍDO
 - [ ] Adicionar histórico de cálculos
-- [ ] Implementar suporte a parênteses
-- [ ] Adicionar operações avançadas (%, √, potência)
+- [ ] Implementar operações avançadas (%, √, potência)
 - [ ] Suporte a atalhos de teclado
 - [ ] Temas personalizáveis
 - [ ] Modo científico
 - [ ] Exportar histórico
+- [ ] Suporte a constantes matemáticas (π, e)
 
 ## 🐛 Problemas Conhecidos
 
-1. **Segurança**: Uso de `eval()` pode executar código malicioso
-2. **Validação**: Entrada não validada pode causar erros inesperados
-3. **Expressões complexas**: Limitado a operações básicas
+### ✅ Resolvidos:
+- [x] **Segurança**: ~~Uso de `eval()` pode executar código malicioso~~ - **CORRIGIDO**
+- [x] **Validação**: ~~Entrada não validada pode causar erros inesperados~~ - **CORRIGIDO**
+- [x] **Parênteses**: ~~Limitado a operações sem parênteses~~ - **CORRIGIDO**
+
+### 🔄 Em Monitoramento:
+- **Precisão**: Limitação de ponto flutuante em cálculos muito complexos
+- **Interface**: Redimensionamento em telas muito pequenas
+- **Performance**: Expressões extremamente longas podem ser lentas
 
 ## 🤝 Contribuindo
 
@@ -116,7 +169,35 @@ Contribuições são bem-vindas! Para contribuir:
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo `LICENSE` para detalhes.
 
-## 📞 Suporte
+## � Changelog
+
+### Versão 2.0 - Segurança e Funcionalidades Aprimoradas
+
+#### 🛡️ Correções de Segurança:
+- **CRÍTICO**: Removido uso perigoso de `eval()` 
+- **NOVO**: Implementado parser matemático seguro próprio
+- **NOVO**: Validação rigorosa de entrada com regex
+- **NOVO**: Proteção completa contra injeção de código
+
+#### ✨ Novas Funcionalidades:
+- **NOVO**: Suporte completo a parênteses `(2+3)*4`
+- **NOVO**: Suporte a números negativos `-5+3`
+- **NOVO**: Algoritmo Shunting Yard para precedência de operadores
+- **NOVO**: Tratamento de erros mais específico e amigável
+- **NOVO**: Formatação automática de resultados (remove casas decimais desnecessárias)
+
+#### 🔧 Melhorias Técnicas:
+- **MELHORIA**: Código mais modular e organizado
+- **MELHORIA**: Comentários e documentação aprimorados
+- **MELHORIA**: Validação de parênteses balanceados
+- **MELHORIA**: Controle de precedência matemática
+
+### Versão 1.0 - Versão Inicial
+- Interface básica da calculadora
+- Operações matemáticas simples
+- Layout responsivo
+
+## �📞 Suporte
 
 Se você encontrar problemas ou tiver sugestões:
 
